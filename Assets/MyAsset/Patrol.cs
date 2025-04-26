@@ -12,7 +12,7 @@ public class Patrol : StateMachine
     public override void EnterState()
     {
         Debug.Log("Enter Patrol");
-        GoToNextPoint();
+        //GoToNextPoint();
     }
 
     public override void UpdateState()
@@ -43,7 +43,7 @@ public class Patrol : StateMachine
 
         if (agent.remainingDistance < 0.5f)
         {
-            GoToNextPoint();
+            GoToNextPoint(player.transform.position);
         }
 
        
@@ -58,12 +58,17 @@ public class Patrol : StateMachine
     
 
 
-    void GoToNextPoint(bool chooseAnotherArea = false)
+    void GoToNextPoint(Vector3 desiredPosition, bool chooseAnotherArea = false)
     {
+        Vector3 chosenPoint = desiredPosition;
+        if (chooseAnotherArea)
+        {
+            chosenPoint = RandomPointNavMesh.RandomPointInArea(desiredPosition);
+        }
         
 
 
-        if (RandomPointNavMesh.instance.RandomPoint(RandomPointNavMesh.instance.centerGO.transform.position, out point))
+        if (RandomPointNavMesh.instance.GetPointOnNavmesh(chosenPoint, out point))
         {
             Debug.DrawRay(point, Vector3.up, Color.red, 10.0f);
 
@@ -75,7 +80,7 @@ public class Patrol : StateMachine
         else
         {
             Debug.LogError("KHONG TIM THAY");
-;            GoToNextPoint();
+;            GoToNextPoint(desiredPosition, true);
         }
     }
 

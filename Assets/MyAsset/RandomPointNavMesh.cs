@@ -34,7 +34,7 @@ public class RandomPointNavMesh : MonoBehaviour
 
         return pos + randomVector3;
     }
-    public bool RandomPoint(Vector3 center, out Vector3 result)
+    public bool GetPointOnNavmesh(Vector3 center, out Vector3 result)
     {
         for (int i = 0; i < rangeList.Length; i++)
         {
