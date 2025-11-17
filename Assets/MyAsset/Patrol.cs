@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class Patrol : StateMachine
 {
-    //int currentPoint = 0;
     Vector3 point;
     public Patrol(Enemy enemy, NavMeshAgent agent, Transform player) : base(enemy, agent, player) { }
     public override void EnterState()
@@ -28,25 +27,8 @@ public class Patrol : StateMachine
       
         }
 
-            //if (agent.pathStatus == NavMeshPathStatus.PathComplete)
-            //{
-                
-            //}
-            //else
-            //{
-            //    GoToNextPoint();
-            //}   
-        
-        //else
-        
-
-
-        if (agent.remainingDistance < 0.5f)
-        {
-            GoToNextPoint(player.transform.position);
-        }
-
-       
+        PatrolWithTarget();
+        //PatrolWithoutTarget();
     }
 
     public override void ExitState()
@@ -56,8 +38,6 @@ public class Patrol : StateMachine
     }
 
     
-
-
     void GoToNextPoint(Vector3 desiredPosition, bool chooseAnotherArea = false)
     {
         Vector3 chosenPoint = desiredPosition;
@@ -66,30 +46,52 @@ public class Patrol : StateMachine
             chosenPoint = RandomPointNavMesh.RandomPointInArea(desiredPosition);
         }
         
-
-
         if (RandomPointNavMesh.instance.GetPointOnNavmesh(chosenPoint, out point))
         {
             Debug.DrawRay(point, Vector3.up, Color.red, 10.0f);
-
-            NavMeshPath path = new NavMeshPath();
-         
-            agent.SetDestination(point);
-           
+       
+            agent.SetDestination(point);  
         }
         else
         {
             Debug.LogError("KHONG TIM THAY");
-;            GoToNextPoint(desiredPosition, true);
+            GoToNextPoint(desiredPosition, true);
         }
     }
-
-    void DrawPath(NavMeshPath path)
+    void GoToNextPointWithoutTarget()
     {
-        for (int i = 0; i < path.corners.Length - 1; i++)
+        if (RandomPointNavMesh.instance.GetRandomPoint(transform.position, RandomPointNavMesh.instance.range, out point))
         {
-            Debug.DrawLine(path.corners[i], path.corners[i + 1], Color.green, 10f);
+            Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
+            agent.SetDestination(point);
+        }
+        else
+        {
+            Debug.LogError("KHONG TIM THAY");
         }
     }
 
+    void PatrolWithTarget()
+    {
+        //if (agent.pathStatus == NavMeshPathStatus.PathComplete)
+        //{
+        //    GoToNextPoint(player.position);
+        //}
+        //else
+        //{
+        //    GoToNextPoint();
+        //}   
+
+        if (agent.remainingDistance < 0.5f)
+        {
+            GoToNextPoint(player.position);
+        }
+    }
+    void PatrolWithoutTarget()
+    {
+        if (agent.remainingDistance < 0.5f)
+        {
+            GoToNextPointWithoutTarget();
+        }
+    }
 }

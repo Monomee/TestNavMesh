@@ -20,6 +20,7 @@ public class Attack : StateMachine
         if (Vector3.Distance(enemy.transform.position, player.position) > enemy.attackDistance)
         {
             enemy.ChangeState(new Chase(enemy, agent, player));
+            return;
         }
     }
 

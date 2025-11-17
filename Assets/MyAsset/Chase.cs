@@ -17,15 +17,17 @@ public class Chase : StateMachine
         Debug.Log("Chase");
         agent.SetDestination(player.position);
 
-         distance = Vector3.Distance(enemy.transform.position, player.position);
+        distance = Vector3.Distance(enemy.transform.position, player.position);
 
         if (distance <= enemy.attackDistance)
         {
             enemy.ChangeState(new Attack(enemy, agent, player));
+            return;
         }
         else if (distance > enemy.chaseDistance)
         {
             enemy.ChangeState(new Patrol(enemy, agent, player));
+            return;
         }
     }
 
